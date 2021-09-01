@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Mikronik{% endblock %}
+{{all_mikrot}}
+
+{% block content %}
+
+	<table style="width: 5%; float:left;" class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th scope="col">#</th>
+	
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	  	{% for i in iteration %}
+	  	
+	    <tr>
+	      <th scope="row">{{i}}</th>
+
+	    </tr>
+	 
+	   	{% endfor %}
+	  </tbody>
+	</table>
+
+
+	<table style="width: 45%;position: absolute; left: 5%;" class="table table-striped">
+	  <thead>
+	    <tr>
+	    
+	      <th scope="col">Hostname</th>
+	      <th scope="col">IP</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	  	{% for a in all_mikrot %}
+	  	
+	    <tr>
+	 
+	      <td><a href="{% url 'monitor:detail' a.id %}">{{a.mikrotName}}</a></td>
+	      <td>{{a.mikrotIP}}</td>
+	    </tr>
+	 
+	   	{% endfor %}
+	  </tbody>
+	</table>
+	
+
+	<table style="position: absolute; left: 50%;" class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th scope="col">Доступность</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	{% for i in ip %}
+	    <tr>
+	    	{% if i == 'Available' %}
+	      		<td style="color: green;">{{i}}</td>
+
+	      	{% else %}
+
+	      		<td style="color: red;">{{i}}</td>
+	    	{% endif %}
+	    </tr>
+	   	{% endfor %}
+	  </tbody>
+	</table>
+	
+
+	
+
+
+	
+	
+
+
+
+	
+{% endblock %}
