@@ -22,13 +22,14 @@
 
 
 <div >
-<form>
-<select style="position: absolute; right: 5%; width: 200px; top: 10%;" class="form-select" aria-label="Default select example">
-  <option selected>Все</option>
+<form action="{% url 'monitor:sort_host' mikrot.id %}" method="POST">
+	{% csrf_token %}
+<select name="device" style="position: absolute; right: 5%; width: 200px; top: 10%;" class="form-select" aria-label="Default select example">
+  <option value="0">Все</option>
   <option value="1">Ноутбуки</option>
   <option value="2">Принтеры</option>
   <option value="3">Базы</option>
-  <option value="4">Неидентифицированные</option>
+  <option value="4">Неизвестно</option>
 </select>
 <input style="position: absolute ; right: .5%; top: 10%;" type="submit" value="Поиск" class="btn btn-primary">
 <form>
@@ -127,5 +128,7 @@
 	  </tbody>
 </table>
 
+
+<!--<h4 style="position: absolute; top: 80%">{{result}} TTT</h4>-->
 
 {% endblock %}

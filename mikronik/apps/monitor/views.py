@@ -58,11 +58,28 @@ def view_host(request, mikrot_id):
 		raise Http404("Узел не найден")
 
 	cmd =  request.POST['command']
-	
-	
-	api.cmdExecution(cmd, mikrot_id)
-	
+	name = api.viewHostName(mikrot_id)
+	listDevice = api.viewAllDevice(mikrot_id)
+	resCommand = ''
+	if cmd:
+		resCommand = api.cmdExecution(cmd, mikrot_id)
+	print(resCommand)
 
-	return HttpResponseRedirect(reverse('monitor:detail', args = (a.id,)))
+	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice, 'result': resCommand})
 
 
+def sort_host(request, mikrot_id):
+
+	try:
+		a = Mikrot.objects.get(id = mikrot_id)
+		
+	except:
+		raise Http404("Узел не найден")
+
+	deviceHost = request.POST['device']
+
+
+	name = api.viewHostName(mikrot_id)
+	listDevice = api.changeDevice(deviceHost, api.viewAllDevice(mikrot_id))
+
+	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice})

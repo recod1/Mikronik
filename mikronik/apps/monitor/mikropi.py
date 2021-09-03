@@ -114,4 +114,35 @@ class newMikrotApi():
 		libapi.socketClose(s)
 
 		return res
+	
+	def changeDevice(self, deviceNumber, deviceArr):
+		arr = []
 		
+		if deviceNumber == '1':
+			for device in deviceArr:
+				
+				if 'Ноутбук' in device:
+					arr.append(device)
+				
+
+		if deviceNumber == '2':
+			for device in deviceArr:
+				if 'Принтер' in device:
+					arr.append(device)
+			
+
+		if deviceNumber == '3':
+			for device in deviceArr:
+				if 'Телефонная База' in device:
+					arr.append(device)
+				
+
+		if deviceNumber == '4':
+			for device in deviceArr:
+				if 'Неизвестно' in device:
+					arr.append(device)
+			
+		if deviceNumber == '0':
+			arr = deviceArr
+
+		return arr
