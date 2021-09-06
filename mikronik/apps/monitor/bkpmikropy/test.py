@@ -1,5 +1,3 @@
-import wapi
+test = 'qwer'
 
-
-test = wapi.TestApi()
-print(test.printHell('ar ar w'))
+print(test[-1])

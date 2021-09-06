@@ -63,7 +63,10 @@ def view_host(request, mikrot_id):
 	resCommand = ''
 	if cmd:
 		resCommand = api.cmdExecution(cmd, mikrot_id)
-	print(resCommand)
+
+		for res in resCommand:
+			print(res)
+		
 
 	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice, 'result': resCommand})
 
@@ -83,3 +86,22 @@ def sort_host(request, mikrot_id):
 	listDevice = api.changeDevice(deviceHost, api.viewAllDevice(mikrot_id))
 
 	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice})
+
+
+
+def all_device(request):
+
+	listDev = api.viewAllHost()
+	return render(request, 'monitor/all_device.html', {'listDevice': listDev})
+
+
+def sort_all_device(request):
+	deviceHost = request.POST['device']
+
+	listDev = api.viewAllHost()
+
+	listDevice = api.changeDevice(deviceHost, listDev)
+
+	return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
+
+

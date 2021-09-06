@@ -83,17 +83,25 @@ class newMikrotApi():
 				if '=address=' in el:
 					ip = el[9:]
 					arr.append(ip)
-				
-				if '=active-mac-address=' in el:
-					mac = el[20:]
+					
+				if '=mac-address=' in el:
+					mac = el[13:]
 					arr.append(mac)
+					
 
 				if '=host-name=' in el:
 					hostname = el[11:]
+					
+					
 					arr.append(hostname)
 					arr.append(objectIdentity.identityDevice(hostname))
 					listDevice.append(arr)
+				
 					arr = []
+						
+			if len(arr) != 4:
+				arr = []
+	
 		return listDevice
 
 	def cmdExecution(self, cmd, mikrot_id):
@@ -146,3 +154,53 @@ class newMikrotApi():
 			arr = deviceArr
 
 		return arr
+
+
+	def viewAllHost(self):
+		objectIdentity = newMikrotApi()
+
+		arrAll = []
+		listDev = []
+		arrSom = []	
+
+		all_mikrot = Mikrot.objects.all()
+
+		arrAllHost = []
+		for mikrot in all_mikrot:
+			s = libapi.socketOpen(str(mikrot.mikrotIP))
+
+			dev_api = libapi.ApiRos(s)
+
+			if not dev_api.login('admin', str(mikrot.mikrotPass)):
+				pass
+
+			
+			command = ["/ip/dhcp-server/lease/print"]
+			dev_api.writeSentence(command)
+			res = libapi.readResponse(dev_api)
+			arrAll.append(res)
+	
+			for element in arrAll:
+				for ele in element:	
+					for el in ele:			
+						if '=address=' in el:
+							ip = el[9:]
+							arrSom.append(ip)
+							
+						if '=mac-address=' in el:
+							mac = el[13:]
+							arrSom.append(mac)
+
+						if '=host-name=' in el:
+							hostname = el[11:]
+							arrSom.append(hostname)
+							arrSom.append(objectIdentity.identityDevice(hostname))
+							arrSom.append(mikrot.mikrotName)
+							listDev.append(arrSom)
+							arrSom = []
+					if len(arrSom) != 4:
+						arrSom = []
+			arrAll = []
+			libapi.socketClose(s)
+
+		return listDev

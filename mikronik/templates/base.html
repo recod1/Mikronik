@@ -14,10 +14,14 @@
       	<li style="position: absolute; left: 12%; font-size: 150%" class="nav-link">{{mikrot.mikrotIP}}</li>
         <li class="nav-item"><a href="http://127.0.0.1:8000/admin" class="nav-link active" aria-current="page">Admin</a></li>
         <li class="nav-item"><a href="http://127.0.0.1:8000/monitor" class="nav-link">Главная</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Устройства</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Текст</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Текст</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:8000/monitor/all_device" class="nav-link">Устройства</a></li>
+        <!--<li class="nav-item"><a href="#" class="nav-link">Текст</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Текст</a></li>-->
       </ul>
+
+      {% block header %}
+
+      {% endblock %}
     </header>
 	
 		

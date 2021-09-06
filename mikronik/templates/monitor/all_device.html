@@ -2,27 +2,11 @@
 
 {% block title %}{{mikrot.mikrotName}}{% endblock %}
 
+
+
 {% block content %}
 
-
-
-
-
-<form action="{% url 'monitor:view_host' mikrot.id %}" method="POST">
-	{% csrf_token %}
-	<div class="form-group">
-		<div class="form-group mx-sm-3 mb-2">
-			<input style="position: absolute ; width: 77%; top: 10%;" type="text" name="command" placeholder="Введите команду" class="form-control">
-		</div>
-
-	<input style="position: absolute ; right: 16%; top: 10%;" type="submit" value="Отправить" class="btn btn-primary mb-2">
-	</div>
-
-</form>
-
-
-<div >
-<form action="{% url 'monitor:sort_host' mikrot.id %}" method="POST">
+<form action="{% url 'monitor:sort_all_device' %}" method="POST">
 	{% csrf_token %}
 <select name="device" style="position: absolute; right: 5%; width: 200px; top: 10%;" class="form-select" aria-label="Default select example">
   <option value="0">Все</option>
@@ -32,15 +16,16 @@
   <option value="4">Неизвестно</option>
 </select>
 <input style="position: absolute ; right: .5%; top: 10%;" type="submit" value="Поиск" class="btn btn-primary">
-<form>
-</div>
+</form>
 
 
 
 
 
 
-<table style="width: 30%;position: absolute; float: left; top: 14%" class="table table-striped">
+
+
+<table style="width: 15%;position: absolute; float: left; top: 14%" class="table table-striped">
 	  <thead>
 	    <tr>
 	    
@@ -62,7 +47,7 @@
 	  </tbody>
 </table>
 
-<table style="width: 30%;position: absolute; left: 30%; top: 14%" class="table table-striped">
+<table style="width: 20%;position: absolute; left: 15%; top: 14%" class="table table-striped">
 	  <thead>
 	    <tr>
 	    
@@ -84,7 +69,7 @@
 	  </tbody>
 </table>
 
-<table style="width: 25%;position: absolute; left: 60%; top: 14%" class="table table-striped">
+<table style="width: 25%;position: absolute; left: 35%; top: 14%" class="table table-striped">
 	  <thead>
 	    <tr>
 	    
@@ -99,6 +84,30 @@
 	    <tr>
 	 
 	      <td>{{mac.1}}</td>
+	      
+	    </tr>
+	 
+	   	{% endfor %}
+	  </tbody>
+</table>
+
+
+
+<table style="width: 25%;position: absolute; left: 60%; top: 14%" class="table table-striped">
+	  <thead>
+	    <tr>
+	    
+
+	      <th scope="col">Объект</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	  	{% for device in listDevice %}
+	  	
+	    <tr>
+	 
+	      <td>{{device.4}}</td>
 	      
 	    </tr>
 	 
@@ -127,8 +136,5 @@
 	   	{% endfor %}
 	  </tbody>
 </table>
-
-
-<!--<h4 style="position: absolute; top: 80%">{{result}} TTT</h4>-->
 
 {% endblock %}
