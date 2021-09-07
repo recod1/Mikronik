@@ -1,5 +1,6 @@
 from . import libapi
 from .models import Mikrot
+from ping3 import ping, verbose_ping
 
 class newMikrotApi():
 
@@ -204,3 +205,70 @@ class newMikrotApi():
 			libapi.socketClose(s)
 
 		return listDev
+
+
+	def groupCommand(self, groupCommand, arrGroupHost):
+		for arr in arrGroupHost:
+			if arr[1]:
+				#print(arr[0])
+				
+
+				data = Mikrot.objects.get(id = arr[0])
+
+				cmd = groupCommand.split(',')
+				s = libapi.socketOpen(str(data.mikrotIP))
+
+				dev_api = libapi.ApiRos(s)
+
+				if not dev_api.login('admin', str(data.mikrotPass)):
+					pass
+
+				
+				dev_api.writeSentence(cmd)
+				res = libapi.readResponse(dev_api)
+				libapi.socketClose(s)
+				print("------------------")
+				print(data.mikrotName)
+				for ar in res:
+					for r in ar:
+						print(r)
+				
+		return res
+
+
+
+	def viewListMikrot(self):
+
+		all_mikrot = Mikrot.objects.all()
+		arr = []
+		arrM = []
+		
+		j = 1
+		
+		for p in all_mikrot:
+			
+			x = ping(str(p.mikrotIP))
+		
+			if x:
+				arr.append(j)
+				arr.append(p.mikrotName)
+				arr.append(p.mikrotIP)
+				arr.append('Available')
+				arr.append(p.id)
+				arrM.append(arr)
+				arr = []
+
+			else:
+				arr.append(j)
+				arr.append(p.mikrotName)
+				arr.append(p.mikrotIP)
+				arr.append('Not available')
+				arr.append(p.id)
+				arrM.append(arr)
+				arr = []
+
+		
+
+			j = j + 1
+
+		return arrM

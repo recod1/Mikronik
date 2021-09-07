@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .models import Mikrot
 from django.http import Http404, HttpResponseRedirect
-from ping3 import ping, verbose_ping
 from django.http import HttpResponse
 from django.urls import reverse
 from . import mikropi
@@ -9,32 +8,10 @@ from . import mikropi
 api = mikropi.newMikrotApi()
 	
 def index(request):
-	all_mikrot = Mikrot.objects.all()
-	res = []
-
-	iterat = []
-
-	j = 1
+	arrM = api.viewListMikrot()
 
 
-	while j <= len(all_mikrot):
-		iterat.append(j)
-		j = j + 1
-
-
-	for p in all_mikrot:
-		try:
-			x = ping(str(p.mikrotIP))
-			if x:
-				res.append('Available')
-			else:
-				res.append('Not available')
-		except:
-			res.append('Not available')
-
-	
-
-	return render(request, 'monitor/list.html', {'all_mikrot': all_mikrot, 'ip': res, 'iteration': iterat})
+	return render(request, 'monitor/list.html', {'arr': arrM})
 
 
 def detail(request, mikrot_id):
@@ -65,8 +42,9 @@ def view_host(request, mikrot_id):
 		resCommand = api.cmdExecution(cmd, mikrot_id)
 
 		for res in resCommand:
-			print(res)
-		
+			for r in res:
+				print(r)
+			print('-----------------')
 
 	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice, 'result': resCommand})
 
@@ -103,5 +81,54 @@ def sort_all_device(request):
 	listDevice = api.changeDevice(deviceHost, listDev)
 
 	return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
+
+
+def group(request):
+
+	all_mikrot = Mikrot.objects.all()
+	iterat = []
+	j = 1
+	arrMain = []
+
+	while j <= len(all_mikrot):
+		iterat.append(j)
+		j = j + 1
+
+
+	
+	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot, 'iteration': iterat})
+
+
+
+def group_command(request):
+	groupCommand = ''
+	all_mikrot = Mikrot.objects.all()
+	iterat = []
+	j = 1
+	arrMain = []
+
+	while j <= len(all_mikrot):
+		iterat.append(j)
+		j = j + 1
+
+
+	groupCommand =  request.POST['command']
+	groupDevice = []
+	
+	for a in all_mikrot:
+			
+		statusDevice = request.POST.get(str(a.id), False)
+			
+		arrMain.append(a.id)
+		arrMain.append(statusDevice)
+
+		groupDevice.append(arrMain)
+		arrMain = []
+
+	api.groupCommand(groupCommand, groupDevice)
+
+	
+	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot, 'iteration': iterat})
+
 
 

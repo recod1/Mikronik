@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Mikronik{% endblock %}
+{{all_mikrot}}
+
+{% block content %}
+
+	<form action="{% url 'monitor:group_command' %}" method="POST">
+	{% csrf_token %}
+	<div class="form-group">
+		<div class="form-group mx-sm-3 mb-2">
+			<input style="position: absolute ; width: 93%; top: 10%;" type="text" name="command" placeholder="Введите команду" class="form-control">
+		</div>
+
+	<input style="position: absolute ; right: .5%; top: 10%;" type="submit" value="Отправить" class="btn btn-primary mb-2">
+	</div>
+	
+	<table style="width: 5%; float:left;position: absolute; top: 15%" class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th scope="col">#</th>
+	
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	  	{% for i in iteration %}
+	  	
+	    <tr>
+	      <th scope="row">{{i}}</th>
+
+	    </tr>
+	 
+	   	{% endfor %}
+	  </tbody>
+	</table>
+
+	<table style="width: 100%;position: absolute; left: 5%;top: 15%" class="table table-striped">
+	  <thead>
+	    <tr>
+	    
+	      <th scope="col">Hostname</th>
+	      <th scope="col">IP</th>
+	      <th scope="col" class="input" style="cursor: pointer;">Change All</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	
+	  	{% for a in all_mikrot %}
+	  	
+	    <tr>
+	 
+	      <td><a href="{% url 'monitor:detail' a.id %}">{{a.mikrotName}}</a></td>
+	      <td>{{a.mikrotIP}}</td>
+	      <td><input class="checkbox-input"  name = "{{a.id}}" type="checkbox"></td>
+	    </tr>
+	 
+	   	{% endfor %}
+	  </tbody>
+	
+	  	<script type="text/javascript">
+
+	  			
+
+				let input = document.querySelector(".input"),
+				checkboxInput = document.querySelectorAll(".checkbox-input");
+				
+				input.addEventListener("click", function (){
+
+				  for(let i = 0; i < checkboxInput.length; i++) {
+
+				    if(checkboxInput[i].checked)
+				    {
+				    	
+				      checkboxInput[i].removeAttribute("checked");
+				    } 
+
+				    else 
+				    {
+				      checkboxInput[i].setAttribute("checked", "checked");
+				    }
+				  }
+				});
+
+				
+
+				
+	</script>
+</form>
+	
+{% endblock %}
