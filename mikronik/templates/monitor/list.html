@@ -20,9 +20,9 @@
 	  	
 	  	
 	    <tr>
-	    	<a style="cursor: pointer;" href="{% url 'monitor:detail' i.4 %}">
-	      <th scope="row">{{i.0}}</th><a href="#"></a>
-	      <th scope="row">{{i.1}}</th>
+	    	
+	      <th scope="row">{{i.0}}</th>
+	      <th scope="row"><a style="cursor: pointer;" href="{% url 'monitor:detail' i.4 %}">{{i.1}}</a></th>
 	      <th scope="row">{{i.2}}</th>
 
 	      {% if i.3 == 'Available' %}
@@ -32,7 +32,7 @@
 
 	      		<td style="color: red;">{{i.3}}</td>
 	    	{% endif %}
-	    	</a>
+	    
 	    </tr>
 	
 	 	

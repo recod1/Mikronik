@@ -1,0 +1,50 @@
+<html>
+<head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+
+
+<body class = "text-center" style="align: center">
+
+{% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+  {% else %}
+    <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table align="center">
+
+<tr>
+
+  <td>{{ form.username }}</td>
+</tr>
+
+<tr>
+
+  <td >{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+
+{# Assumes you setup the password_reset view in your URLconf #}
+
+</body>
+
+</html>

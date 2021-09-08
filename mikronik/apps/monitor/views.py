@@ -3,19 +3,22 @@ from .models import Mikrot
 from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from . import mikropi
 
 api = mikropi.newMikrotApi()
 	
+
+@permission_required('mikronik.index')
 def index(request):
 	arrM = api.viewListMikrot()
 
-
 	return render(request, 'monitor/list.html', {'arr': arrM})
 
-
+@permission_required('mikronik.detail')
 def detail(request, mikrot_id):
-	listDevice = api.viewAllDevice(mikrot_id)
+	listDevice = api.viewAllDevice(mikrot_id) 
 	name = api.viewHostName(mikrot_id)		
 	try:
 		a = Mikrot.objects.get(id = mikrot_id)
@@ -26,7 +29,7 @@ def detail(request, mikrot_id):
 	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice})
 
 
-
+@permission_required('mikronik.index')
 def view_host(request, mikrot_id):
 	try:
 		a = Mikrot.objects.get(id = mikrot_id)
@@ -48,7 +51,7 @@ def view_host(request, mikrot_id):
 
 	return render(request, 'monitor/detail.html', {'mikrot': a, 'hostname': name, 'listDevice':listDevice, 'result': resCommand})
 
-
+@permission_required('mikronik.index')
 def sort_host(request, mikrot_id):
 
 	try:
@@ -82,7 +85,7 @@ def sort_all_device(request):
 
 	return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
 
-
+@permission_required('mikronik.index')
 def group(request):
 
 	all_mikrot = Mikrot.objects.all()
@@ -98,8 +101,7 @@ def group(request):
 	
 	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot, 'iteration': iterat})
 
-
-
+@permission_required('mikronik.index')
 def group_command(request):
 	groupCommand = ''
 	all_mikrot = Mikrot.objects.all()

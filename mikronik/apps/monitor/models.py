@@ -10,6 +10,7 @@ class Mikrot(models.Model):
 		return self.mikrotName
 
 	class Meta():
-
 		verbose_name = 'Микротик'
 		verbose_name_plural = 'Микротики'
+
+		#permissions = (("detail", "User not auth"),) 
