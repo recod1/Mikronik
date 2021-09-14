@@ -9,15 +9,17 @@
 
 	</head>
 	<body>
+
+			
 		<header style="background-color: whitesmoke; width: 100%" class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
-      	<li style="position: absolute; left: 1%; font-size: 150%" class="nav-link">{{hostname}}</li>
-      	<li style="position: absolute; left: 12%; font-size: 150%" class="nav-link">{{mikrot.mikrotIP}}</li>
-        <li class="nav-item"><a href="http://127.0.0.1:8000/admin" class="nav-link active" aria-current="page">Admin</a></li>
-        <li class="nav-item"><a href="http://127.0.0.1:8000/monitor" class="nav-link">Главная</a></li>
-        <li class="nav-item"><a href="http://127.0.0.1:8000/monitor/all_device" class="nav-link">Устройства</a></li>
-        <li class="nav-item"><a href="http://127.0.0.1:8000/monitor/group" class="nav-link">Групповое управление</a></li>
-        <!--<li class="nav-item"><a href="#" class="nav-link">Текст</a></li>-->
+      	<li style="font-size: 150%" class="nav-link">{{hostname}}</li>
+      	<li style="font-size: 150%" class="nav-link">{{mikrot.mikrotIP}}</li>
+        <li class="nav-item"><a href="/admin" class="nav-link active" aria-current="page">Admin</a></li>
+        <li class="nav-item"><a href="/monitor" class="nav-link">Главная</a></li>
+        <li class="nav-item"><a href="/all_device" class="nav-link">Устройства</a></li>
+        <li class="nav-item"><a href="/monitor/group" class="nav-link">Групповое управление</a></li>
+      
       	
       {% if user.is_authenticated %}
      <li class="nav-link">{{ user.get_username }}</li>

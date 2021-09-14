@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 from . import libapi
 from .models import Mikrot
 from ping3 import ping, verbose_ping
+from sys import getdefaultencoding
+
 
 class newMikrotApi():
 
@@ -39,18 +43,21 @@ class newMikrotApi():
 
 
 	def viewHostName(self, mikrot_id):
-
+		getdefaultencoding()
 		data = Mikrot.objects.get(id = mikrot_id)
 
 		s = libapi.socketOpen(str(data.mikrotIP))
 		dev_api = libapi.ApiRos(s)
 
-		if not dev_api.login('admin', str(data.mikrotPass)):
+		if not dev_api.login(data.mikrotLogin, data.mikrotPass):
 			pass
+		
 
 		commandName = ["/system/identity/print"]
 		dev_api.writeSentence(commandName)
 		resName = libapi.readResponse(dev_api)
+		en = resName[0][1].encode('utf-8', errors='xmlcharrefreplace')
+		print(en.decode())
 		name = resName[0][1][6:]
 		libapi.socketClose(s)
 		return name
@@ -62,8 +69,8 @@ class newMikrotApi():
 
 		s = libapi.socketOpen(str(data.mikrotIP))
 		dev_api = libapi.ApiRos(s)
-
-		if not dev_api.login('admin', str(data.mikrotPass)):
+	
+		if not dev_api.login(data.mikrotLogin, data.mikrotPass):
 			pass
 
 		
@@ -114,7 +121,7 @@ class newMikrotApi():
 
 		dev_api = libapi.ApiRos(s)
 
-		if not dev_api.login('admin', str(data.mikrotPass)):
+		if not dev_api.login(data.mikrotLogin, data.mikrotPass):
 			pass
 
 		
@@ -150,6 +157,10 @@ class newMikrotApi():
 			for device in deviceArr:
 				if 'Неизвестно' in device:
 					arr.append(device)
+		if deviceNumber == '5':
+			for device in deviceArr:
+				if 'Системник' in device:
+					arr.append(device)
 			
 		if deviceNumber == '0':
 			arr = deviceArr
@@ -172,7 +183,7 @@ class newMikrotApi():
 
 			dev_api = libapi.ApiRos(s)
 
-			if not dev_api.login('admin', str(mikrot.mikrotPass)):
+			if not dev_api.login(mikrot.mikrotLogin, mikrot.mikrotPass):
 				pass
 
 			
@@ -208,6 +219,7 @@ class newMikrotApi():
 
 
 	def groupCommand(self, groupCommand, arrGroupHost):
+
 		for arr in arrGroupHost:
 			if arr[1]:
 				#print(arr[0])
@@ -220,12 +232,13 @@ class newMikrotApi():
 
 				dev_api = libapi.ApiRos(s)
 
-				if not dev_api.login('admin', str(data.mikrotPass)):
+				if not dev_api.login(data.mikrotLogin, data.mikrotPass):
 					pass
 
 				
 				dev_api.writeSentence(cmd)
 				res = libapi.readResponse(dev_api)
+
 				libapi.socketClose(s)
 				print("------------------")
 				print(data.mikrotName)
@@ -233,7 +246,7 @@ class newMikrotApi():
 					for r in ar:
 						print(r)
 				
-		return res
+		return 'Command execute'
 
 
 
@@ -248,8 +261,8 @@ class newMikrotApi():
 		for p in all_mikrot:
 			
 			x = ping(str(p.mikrotIP))
-		
-			if x:
+			
+			if x or x == 0:
 				arr.append(j)
 				arr.append(p.mikrotName)
 				arr.append(p.mikrotIP)

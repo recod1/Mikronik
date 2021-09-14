@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# -*- coding: latin-1 -*-
+# -*- coding: utf-8 -*-
 import sys, os, time, binascii, socket, select
 import hashlib
 

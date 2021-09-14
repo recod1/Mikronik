@@ -59,7 +59,12 @@
 	      <td>{{device.0}}</td>
 	      <td>{{device.2}}</td>
 	      <td>{{device.1}}</td>
+	      {% if device.3 == "Телефонная База" or  device.3 == "Принтер" %}
+	      <td><a style="cursor: pointer;" target="_blank" href="http:\\{{device.0}}">{{device.3}}</a></td>
+	      {% else %}
 	      <td>{{device.3}}</td>
+
+	      {% endif %}
 	    </tr>
 	 
 	   	{% endfor %}

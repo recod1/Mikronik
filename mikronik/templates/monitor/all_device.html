@@ -26,6 +26,7 @@
 					  <option value="1">Ноутбуки</option>
 					  <option value="2">Принтеры</option>
 					  <option value="3">Базы</option>
+					  <option value="5">Системники</option>
 					  <option value="4">Неизвестно</option>
 					</select>
 					<input style="" type="submit" value="Поиск" class="btn btn-primary">
@@ -59,7 +60,12 @@
 	      <td>{{device.2}}</td>
 	      <td>{{device.1}}</td>
 	      <td>{{device.4}}</td>
+	      {% if device.3 == "Телефонная База" or  device.3 == "Принтер" %}
+	      <td><a style="cursor: pointer;" target="_blank" href="http:\\{{device.0}}">{{device.3}}</a></td>
+	      {% else %}
 	      <td>{{device.3}}</td>
+
+	      {% endif %}
 	    </tr>
 	 
 	   	{% endfor %}
