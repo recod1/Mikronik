@@ -56,9 +56,9 @@ class newMikrotApi():
 		commandName = ["/system/identity/print"]
 		dev_api.writeSentence(commandName)
 		resName = libapi.readResponse(dev_api)
-		en = resName[0][1].encode('utf-8', errors='xmlcharrefreplace')
-		print(en.decode())
+		
 		name = resName[0][1][6:]
+
 		libapi.socketClose(s)
 		return name
 
@@ -283,5 +283,63 @@ class newMikrotApi():
 		
 
 			j = j + 1
+		
+		name = []
+		res = []
 
-		return arrM
+		for a in arrM:
+		    name.append(a[1])
+
+		name = sorted(name)
+
+		i = 0
+		while i <= len(name) -1:
+		    for a in arrM:
+		        if name[i] in a:
+		        	a[0] = i+1
+		        	res.append(a)
+		    i = i + 1
+
+		return res
+
+
+
+
+	def viewListMikrotGroup(self):
+
+		all_mikrot = Mikrot.objects.all()
+		arr = []
+		arrM = []
+			
+		j = 1
+			
+		for p in all_mikrot:
+				
+			arr.append(j)
+			arr.append(p.mikrotName)
+			arr.append(p.mikrotIP)
+
+			arr.append(p.id)
+			arrM.append(arr)
+			arr = []
+			
+
+			j = j + 1
+			
+		name = []
+		res = []
+
+		for a in arrM:
+			name.append(a[1])
+
+		name = sorted(name)
+
+		i = 0
+		while i <= len(name) -1:
+			for a in arrM:
+				if name[i] in a:
+					a[0] = i+1
+					res.append(a)
+			i = i + 1
+
+		return res

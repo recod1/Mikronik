@@ -88,36 +88,23 @@ def sort_all_device(request):
 @permission_required('mikronik.index')
 def group(request):
 
-	all_mikrot = Mikrot.objects.all()
-	iterat = []
-	j = 1
-	arrMain = []
-
-	while j <= len(all_mikrot):
-		iterat.append(j)
-		j = j + 1
-
+	all_mikrot = api.viewListMikrotGroup()
 
 	
-	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot, 'iteration': iterat})
+	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot})
 
 @permission_required('mikronik.index')
 def group_command(request):
 	groupCommand = ''
-	all_mikrot = Mikrot.objects.all()
-	iterat = []
-	j = 1
+	allM = Mikrot.objects.all()
+	all_mikrot = api.viewListMikrotGroup()
+
 	arrMain = []
-
-	while j <= len(all_mikrot):
-		iterat.append(j)
-		j = j + 1
-
 
 	groupCommand =  request.POST['command']
 	groupDevice = []
 	
-	for a in all_mikrot:
+	for a in allM:
 			
 		statusDevice = request.POST.get(str(a.id), False)
 			
@@ -130,7 +117,7 @@ def group_command(request):
 	api.groupCommand(groupCommand, groupDevice)
 
 	
-	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot, 'iteration': iterat})
+	return render(request, 'monitor/group.html', {'all_mikrot': all_mikrot})
 
 
 
