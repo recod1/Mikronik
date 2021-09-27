@@ -6,9 +6,24 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from . import mikropi
-
+import pandas as pd
+from django.shortcuts import render
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.core.files import File
 api = mikropi.newMikrotApi()
 	
+def simple_upload(request):
+	if request.method == 'POST' and request.FILES['myfile']:
+		myfile = request.FILES['myfile']
+		fs = FileSystemStorage()
+		filename = fs.save(myfile.name, myfile)
+		uploaded_file_url = fs.url(filename)
+		return render(request, 'monitor/simple_upload.html', {
+			'uploaded_file_url': uploaded_file_url})
+		
+	return render(request, 'monitor/simple_upload.html')
+
 
 @permission_required('mikronik.index')
 def index(request):
@@ -77,12 +92,28 @@ def all_device(request):
 
 
 def sort_all_device(request):
+
+	try:
+		deviceHost = request.POST['device']
+
+		listDev = api.viewAllHost()
+
+		listDevice = api.changeDevice(deviceHost, listDev)
+		
+
+		return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
+	except:
+		listDev = api.viewAllHost()
+		return render(request, 'monitor/all_device.html', {'listDevice': listDev})
+
+
+def save_device(request):
 	deviceHost = request.POST['device']
 
 	listDev = api.viewAllHost()
 
 	listDevice = api.changeDevice(deviceHost, listDev)
-
+	api.saveDevice(listDevice, deviceHost)
 	return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
 
 @permission_required('mikronik.index')

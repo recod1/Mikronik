@@ -4,13 +4,27 @@
 
 
 
-
-
-
-
-
-
 {% block content %}
+<script type="text/javascript">
+function saveDev(){
+	
+	
+    var form = document.getElementById("saveFindForm");
+    form.action = "{% url 'monitor:save_device' %}";
+    form.submit();
+}
+
+
+function findDev(){
+	
+	
+    var form = document.getElementById("saveFindForm");
+    form.action = "{% url 'monitor:sort_all_device' %}";
+    form.submit();
+}
+
+</script>
+
 <nav class="navbar navbar-expand navbar-dark bg-white" aria-label="Second navbar example">
     <div class="container-fluid ">
       
@@ -18,20 +32,34 @@
         <ul class="navbar-nav me-auto">
        
         </ul>
-        <form action="{% url 'monitor:sort_all_device' %}" method="POST">
-						{% csrf_token %}
+
+       
+
+        <form id = "saveFindForm" method="POST">
+					{% csrf_token %}
+
+					
+
 					<div class="d-flex w-100 gap-2">
-					<select name="device" style="width: 200px;" class="form-select" aria-label="Default select example">
-					  <option value="0">Все</option>
-					  <option value="1">Ноутбуки</option>
-					  <option value="2">Принтеры</option>
-					  <option value="3">Базы</option>
-					  <option value="5">Системники</option>
-					  <option value="4">Неизвестно</option>
+						
+					
+					<select name="device" style="width: 200px;" class="form-select" aria-label="Default select example" >
+					  <option value="0" >Все</option>
+					  <option value="1" >Ноутбуки</option>
+					  <option value="2" >Принтеры</option>
+					  <option value="3" >Базы</option>
+					  <option value="5" >Системники</option>
+					  <option value="4" >Неизвестно</option>
 					</select>
-					<input style="" type="submit" value="Поиск" class="btn btn-primary">
+					
+					
+					
+					<input id = 'findBtn' onclick="findDev()" name="find" type="submit" value="Поиск" class="btn btn-primary">
+					<input id = 'saveBtn' onclick="saveDev()" name="save" type="submit" value="Сохранить" class="btn btn-primary">
 					</div>
 				</form>
+				
+					
 			</div>
 		</div>
 </nav>

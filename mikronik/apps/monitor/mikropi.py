@@ -4,6 +4,12 @@ from . import libapi
 from .models import Mikrot
 from ping3 import ping, verbose_ping
 from sys import getdefaultencoding
+import pandas as pd
+from datetime import datetime
+import os
+
+from django.http import HttpResponse, Http404
+from wsgiref.util import FileWrapper
 
 
 class newMikrotApi():
@@ -164,7 +170,7 @@ class newMikrotApi():
 			
 		if deviceNumber == '0':
 			arr = deviceArr
-
+		print(len(arr))
 		return arr
 
 
@@ -174,18 +180,22 @@ class newMikrotApi():
 		arrAll = []
 		listDev = []
 		arrSom = []	
-
+		nout = []
 		all_mikrot = Mikrot.objects.all()
 
 		arrAllHost = []
 		for mikrot in all_mikrot:
-			s = libapi.socketOpen(str(mikrot.mikrotIP))
+			try:
+				s = libapi.socketOpen(str(mikrot.mikrotIP))
+
+			except:
+				print(mikrot.mikrotName, ' Не доступен')
+				continue
 
 			dev_api = libapi.ApiRos(s)
-
+	
 			if not dev_api.login(mikrot.mikrotLogin, mikrot.mikrotPass):
 				pass
-
 			
 			command = ["/ip/dhcp-server/lease/print"]
 			dev_api.writeSentence(command)
@@ -209,12 +219,13 @@ class newMikrotApi():
 							arrSom.append(objectIdentity.identityDevice(hostname))
 							arrSom.append(mikrot.mikrotName)
 							listDev.append(arrSom)
+															
 							arrSom = []
 					if len(arrSom) != 4:
 						arrSom = []
 			arrAll = []
 			libapi.socketClose(s)
-
+	
 		return listDev
 
 
@@ -248,6 +259,27 @@ class newMikrotApi():
 				
 		return 'Command execute'
 
+	def saveDevice(self, listDevice, fileName):
+
+		df = pd.DataFrame([[' ', ' ', ' ']], columns=['Объект', 'Инвентаризационный номер', 'Устройство'])
+
+		for a in listDevice:
+			def2 = pd.DataFrame([[a[4], a[2], a[3]]], columns=['Объект', 'Инвентаризационный номер', 'Устройство'])
+			df = df.append(def2, ignore_index=True)
+
+	
+		fileName = listDevice[0][3]
+		timeNow = datetime.now()
+		timeNow = str(timeNow.hour) + '-' + str(timeNow.minute) + '-' + str(timeNow.second)
+		path = './gtables/' + str(fileName) + ' ' + str(timeNow) + '.xlsx'
+		df.to_excel(path)
+
+		zip_filename = "3.zip"
+
+		zip_file = open(zip_filename, 'rb')
+		response = HttpResponse(FileWrapper(zip_file), content_type='application/zip')
+		response['Content-Disposition'] = 'attachment; filename=myfile.zip'
+		return response
 
 
 	def viewListMikrot(self):
@@ -255,7 +287,7 @@ class newMikrotApi():
 		all_mikrot = Mikrot.objects.all()
 		arr = []
 		arrM = []
-		
+		arrIP = []
 		j = 1
 		
 		for p in all_mikrot:
@@ -269,6 +301,7 @@ class newMikrotApi():
 				arr.append('Available')
 				arr.append(p.id)
 				arrM.append(arr)
+				arrIP.append(p.mikrotIP)
 				arr = []
 
 			else:
@@ -278,12 +311,15 @@ class newMikrotApi():
 				arr.append('Not available')
 				arr.append(p.id)
 				arrM.append(arr)
+				arrIP.append(p.mikrotIP)
 				arr = []
 
 		
 
 			j = j + 1
-		
+		f = open('ip.txt', 'w')
+		f.write(str(arrIP))
+		f.close()
 		name = []
 		res = []
 
