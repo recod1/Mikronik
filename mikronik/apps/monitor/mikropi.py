@@ -6,19 +6,19 @@ from ping3 import ping, verbose_ping
 from sys import getdefaultencoding
 import pandas as pd
 from datetime import datetime
-import os
-
+from puresnmp import get
+from puresnmp.api.raw import get as raw_get
 from django.http import HttpResponse, Http404
 from wsgiref.util import FileWrapper
-
+import os
 
 class newMikrotApi():
 
 	def identityDevice(self, hostname):
-		NB = ['BN-NB', 'BNNB', 'BN NB']
-		SB = ['BN-SB', 'BNSB', 'BN SB']
-		MN = ['BN-MN', 'BNMN', 'BN MN']
-		PR = ['BN-PR', 'BNPR', 'BN PR']
+		NB = ['BN-NB', 'BNNB', 'BN NB', 'BN_NB']
+		SB = ['BN-SB', 'BNSB', 'BN SB', 'BN_SB']
+		MN = ['BN-MN', 'BNMN', 'BN MN', 'BN_MN']
+		PR = ['BN-PR', 'BNPR', 'BN PR', 'BN_PR']
 		for i in NB:
 			if i.lower() in hostname.lower():
 				return 'Ноутбук'
@@ -138,6 +138,7 @@ class newMikrotApi():
 		return res
 	
 	def changeDevice(self, deviceNumber, deviceArr):
+		community = 'public'
 		arr = []
 		
 		if deviceNumber == '1':
@@ -148,7 +149,24 @@ class newMikrotApi():
 				
 
 		if deviceNumber == '2':
+			modelPrinter = []
+			oids = {
+				'model': '.1.3.6.1.4.1.2699.1.2.1.2.1.1.3.1',
+				'capacityType': '.1.3.6.1.2.1.43.11.1.1.6.1.1'
+			}
 			for device in deviceArr:
+
+				modelPrinter = list(get(device[0], community, oids['model']).decode('UTF-8').split(';'))
+
+				for printer in modelPrinter:
+					if 'MFG' in printer:
+						print(printer[4:], end=' ')
+						
+						
+					if 'MDL' in printer:
+						print(printer[4:])
+
+				
 				if 'Принтер' in device:
 					arr.append(device)
 			
@@ -274,12 +292,6 @@ class newMikrotApi():
 		path = './gtables/' + str(fileName) + ' ' + str(timeNow) + '.xlsx'
 		df.to_excel(path)
 
-		zip_filename = "3.zip"
-
-		zip_file = open(zip_filename, 'rb')
-		response = HttpResponse(FileWrapper(zip_file), content_type='application/zip')
-		response['Content-Disposition'] = 'attachment; filename=myfile.zip'
-		return response
 
 
 	def viewListMikrot(self):
@@ -287,7 +299,7 @@ class newMikrotApi():
 		all_mikrot = Mikrot.objects.all()
 		arr = []
 		arrM = []
-		arrIP = []
+		
 		j = 1
 		
 		for p in all_mikrot:
@@ -301,7 +313,7 @@ class newMikrotApi():
 				arr.append('Available')
 				arr.append(p.id)
 				arrM.append(arr)
-				arrIP.append(p.mikrotIP)
+				
 				arr = []
 
 			else:
@@ -311,15 +323,13 @@ class newMikrotApi():
 				arr.append('Not available')
 				arr.append(p.id)
 				arrM.append(arr)
-				arrIP.append(p.mikrotIP)
+				
 				arr = []
 
 		
 
 			j = j + 1
-		f = open('ip.txt', 'w')
-		f.write(str(arrIP))
-		f.close()
+		
 		name = []
 		res = []
 
@@ -379,3 +389,5 @@ class newMikrotApi():
 			i = i + 1
 
 		return res
+
+	#def viewListPrinters(self):

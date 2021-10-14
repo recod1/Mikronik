@@ -14,12 +14,12 @@
 		<header style="background-color: whitesmoke; width: 100%" class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
       	<li style="font-size: 150%" class="nav-link">{{hostname}}</li>
-      	<li style="font-size: 150%" class="nav-link">{{mikrot.mikrotIP}}</li>
+      	<li style="font-size: 150%" class="nav-link"><a style="cursor: pointer; text-decoration: none;" target="_blank" href="http:\\{{mikrot.mikrotIP}}">{{mikrot.mikrotIP}}</a></li>
         <li class="nav-item"><a href="/admin" class="nav-link active" aria-current="page">Admin</a></li>
         <li class="nav-item"><a href="/monitor" class="nav-link">Главная</a></li>
         <li class="nav-item"><a href="/all_device" class="nav-link">Устройства</a></li>
         <li class="nav-item"><a href="/monitor/group" class="nav-link">Групповое управление</a></li>
-      	<li class="nav-item"><a href="/monitor/simple_upload" class="nav-link">Загрузка</a></li>
+      	<li class="nav-item"><a href="/monitor/invent" class="nav-link">Инвентаризация</a></li>
       	
       {% if user.is_authenticated %}
      <li class="nav-link">{{ user.get_username }}</li>

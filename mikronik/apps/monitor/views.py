@@ -11,18 +11,24 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.files import File
+
 api = mikropi.newMikrotApi()
 	
-def simple_upload(request):
-	if request.method == 'POST' and request.FILES['myfile']:
-		myfile = request.FILES['myfile']
-		fs = FileSystemStorage()
-		filename = fs.save(myfile.name, myfile)
-		uploaded_file_url = fs.url(filename)
-		return render(request, 'monitor/simple_upload.html', {
-			'uploaded_file_url': uploaded_file_url})
-		
-	return render(request, 'monitor/simple_upload.html')
+def invent(request):
+	try:
+		deviceHost = request.POST['device']
+
+		listDev = api.viewAllHost()
+
+		listDevice = api.changeDevice(deviceHost, listDev)
+
+		return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+
+	except:
+		listDev = api.viewAllHost()
+		return render(request, 'monitor/invent.html', {'listDevice': listDev})
+
+	return render(request, 'monitor/invent.html', {'listDevice': listDevice})
 
 
 @permission_required('mikronik.index')
@@ -115,6 +121,28 @@ def save_device(request):
 	listDevice = api.changeDevice(deviceHost, listDev)
 	api.saveDevice(listDevice, deviceHost)
 	return render(request, 'monitor/all_device.html', {'listDevice': listDevice})
+
+
+
+
+
+def invent_printers(request):
+	try:
+		deviceHost = request.POST['device']
+
+		listDev = api.viewAllHost()
+
+		listDevice = api.changeDevice(deviceHost, listDev)
+
+		return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+
+	except:
+		listDev = api.viewAllHost()
+		return render(request, 'monitor/invent.html', {'listDevice': listDev})
+
+	return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+
+
 
 @permission_required('mikronik.index')
 def group(request):
