@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python3
-from . import libapi
-from .models import Mikrot
+from monitor import libapi
+from monitor.models import Mikrot, InventPrinter
 from ping3 import ping, verbose_ping
 from sys import getdefaultencoding
 import pandas as pd
@@ -108,7 +108,14 @@ class newMikrotApi():
 					
 					
 					arr.append(hostname)
+					# try:
+					# 	#print(ip)
+					# 	if get(ip, 'public', '.1.3.6.1.4.1.2699.1.2.1.2.1.1.3.1'):
+					# 		arr.append('Принтер')
+					# 		#print(arr)
+					# except:
 					arr.append(objectIdentity.identityDevice(hostname))
+
 					listDevice.append(arr)
 				
 					arr = []
@@ -137,8 +144,55 @@ class newMikrotApi():
 
 		return res
 	
-	def changeDevice(self, deviceNumber, deviceArr):
+	def parsePrinters(self, deviceNumber, deviceArr):
 		community = 'public'
+		arr = []
+		print('start parse')
+
+		modelPrinter = []
+		oids = {
+			'model': '.1.3.6.1.4.1.2699.1.2.1.2.1.1.3.1',
+			'capacityType': '.1.3.6.1.2.1.43.11.1.1.6.1.1'
+		}
+		for device in deviceArr:
+				
+			if 'Принтер' in device:
+				try:
+
+					mdl = ''
+					mfg = ''
+					modelPrinter = list(get(device[0], community, oids['model']).decode('UTF-8').split(';'))
+
+					capacityNow = get(device[0], community, '.1.3.6.1.2.1.43.11.1.1.9.1.1')
+					capacityMax = get(device[0], community, '.1.3.6.1.2.1.43.11.1.1.8.1.1')
+					capacity = int((100 * int(capacityNow)) / int(capacityMax))
+
+					for printer in modelPrinter:
+						if 'MFG' in printer:
+							mfg = str(printer[4:])						
+								
+						if 'MDL' in printer:
+							mdl = str(mfg + ' ' + str(printer[4:]))
+							
+
+					tonerType = get(device[0], community, '.1.3.6.1.2.1.43.11.1.1.6.1.1').decode('UTF-8')
+					if len(tonerType) > 20:
+						tonerType = tonerType.split(',')
+						tonerType = tonerType[2] 
+					device.append(mdl)
+					device.append(tonerType)
+					device.append(capacity)
+				except:
+					continue
+					
+				arr.append(device)
+	
+			
+
+		return arr
+
+	def changeDevice(self, deviceNumber, deviceArr):
+
 		arr = []
 		
 		if deviceNumber == '1':
@@ -149,24 +203,7 @@ class newMikrotApi():
 				
 
 		if deviceNumber == '2':
-			modelPrinter = []
-			oids = {
-				'model': '.1.3.6.1.4.1.2699.1.2.1.2.1.1.3.1',
-				'capacityType': '.1.3.6.1.2.1.43.11.1.1.6.1.1'
-			}
 			for device in deviceArr:
-
-				modelPrinter = list(get(device[0], community, oids['model']).decode('UTF-8').split(';'))
-
-				for printer in modelPrinter:
-					if 'MFG' in printer:
-						print(printer[4:], end=' ')
-						
-						
-					if 'MDL' in printer:
-						print(printer[4:])
-
-				
 				if 'Принтер' in device:
 					arr.append(device)
 			
@@ -188,7 +225,7 @@ class newMikrotApi():
 			
 		if deviceNumber == '0':
 			arr = deviceArr
-		print(len(arr))
+		
 		return arr
 
 
@@ -306,7 +343,8 @@ class newMikrotApi():
 			
 			x = ping(str(p.mikrotIP))
 			
-			if x or x == 0:
+
+			if isinstance(x, float):
 				arr.append(j)
 				arr.append(p.mikrotName)
 				arr.append(p.mikrotIP)
@@ -315,6 +353,7 @@ class newMikrotApi():
 				arrM.append(arr)
 				
 				arr = []
+
 
 			else:
 				arr.append(j)
@@ -326,7 +365,6 @@ class newMikrotApi():
 				
 				arr = []
 
-		
 
 			j = j + 1
 		

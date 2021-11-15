@@ -14,4 +14,41 @@ class Mikrot(models.Model):
 		verbose_name = 'Микротик'
 		verbose_name_plural = 'Микротики'
 
-		#permissions = (("detail", "User not auth"),) 
+
+
+class InventPC(models.Model):
+	hostNamePC = models.CharField(max_length = 20)
+	userPC = models.CharField(max_length = 50)
+	motherBandPC = models.CharField(max_length = 50)
+	hardDrivePC = models.CharField(max_length = 20)
+	ramPC = models.CharField(max_length = 20)
+	processorPC = models.CharField(max_length = 50)
+	placePC = models.CharField(max_length = 20)
+	dateInvent = models.CharField(max_length = 20)
+
+	def __str__(self):
+		return self.hostNamePC
+	
+class InventNote(models.Model):
+	hostNameNote = models.CharField(max_length = 20)
+	userNote = models.CharField(max_length = 50)
+	modelNote = models.CharField(max_length = 50)
+	hardDriveNote = models.CharField(max_length = 20)
+	ramNote = models.CharField(max_length = 20)
+	processorNote = models.CharField(max_length = 50)
+	placeNote = models.CharField(max_length = 20)
+	dateInvent = models.CharField(max_length = 20)
+
+	def __str__(self):
+		return self.hostNameNote
+
+class InventPrinter(models.Model):
+	hostNamePrinter = models.CharField(max_length = 20)
+	modelPrinter = models.CharField(max_length = 50)
+	tonerTypePrinter = models.CharField(max_length = 20)
+	placePrinter = models.CharField(max_length = 20)
+	dateInvent = models.CharField(max_length = 20)
+
+	def __str__(self):
+		return self.hostNamePrinter
+

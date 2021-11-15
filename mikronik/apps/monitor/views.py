@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Mikrot
+from .models import Mikrot, InventPrinter, InventPC, InventNote
 from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -19,16 +19,64 @@ def invent(request):
 		deviceHost = request.POST['device']
 
 		listDev = api.viewAllHost()
+		
+		
+	
+		
+		if deviceHost == '1':
+			listNote = InventNote.objects.all()
+			listDeviceNote = []
+			for note in listNote:
+				arr = []
+				
+				arr.append(note.hostNameNote)
+				arr.append(note.userNote)
+				arr.append(note.modelNote)
+				arr.append(note.hardDriveNote)
+				arr.append(note.ramNote)
+				arr.append(note.processorNote)
+				arr.append(note.placeNote)
+				arr.append(note.dateInvent)
+				listDeviceNote.append(arr)
+				arr = []
+			
+			return render(request, 'monitor/nb.html', {'listDevice': listDeviceNote})
 
-		listDevice = api.changeDevice(deviceHost, listDev)
+		if deviceHost == '5':
+			listPC = InventPC.objects.all()
+			listDevicePC = []
+			for note in listPC:
+				arr = []
+			
+				arr.append(note.hostNamePC)
+				arr.append(note.userPC)
+				arr.append(note.motherBandPC)
+				arr.append(note.hardDrivePC)
+				arr.append(note.ramPC)
+				arr.append(note.processorPC)
+				arr.append(note.placePC)
+				arr.append(note.dateInvent)
+				listDevicePC.append(arr)
+				arr = []
+			
 
-		return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+			return render(request, 'monitor/pc.html', {'listDevice': listDevicePC})
+
+		if deviceHost == '2':
+			print('pr')
+			listDevice = api.parsePrinters(deviceHost, listDev)
+			return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+		
+
+		
 
 	except:
-		listDev = api.viewAllHost()
+		listDev = '|'
 		return render(request, 'monitor/invent.html', {'listDevice': listDev})
 
 	return render(request, 'monitor/invent.html', {'listDevice': listDevice})
+
+
 
 
 @permission_required('mikronik.index')
